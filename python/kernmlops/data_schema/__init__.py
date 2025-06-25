@@ -10,6 +10,7 @@ from data_schema.file_data import FileDataTable
 from data_schema.generic_table import ProcessMetadataTable
 from data_schema.huge_pages import CollapseHugePageDataTable
 from data_schema.memory_usage import MemoryUsageTable
+from data_schema.page_fault import PageFaultTable
 from data_schema.quanta_runtime import QuantaQueuedTable, QuantaRuntimeTable
 from data_schema.schema import (
     UPTIME_TIMESTAMP,
@@ -33,7 +34,9 @@ table_types: list[type[CollectionTable]] = [
     BlockIOQueueTable,
     BlockIOTable,
     CollapseHugePageDataTable,
+    PageFaultTable,
 ] + list(perf.perf_table_types.values())
+
 
 def demote(user_id: int | None = None, group_id: int | None = None) -> Callable[[], None]:
     def no_op():

@@ -3,18 +3,14 @@ benchmark_config:
   generic:
     benchmark: faux
     cpus: 0
-    transparent_hugepages: never
+    transparent_hugepages: madvise
 collector_config:
   generic:
     poll_rate: 0.1
     output_dir: data
-    output_graphs: false
+    output_graphs: true
     hooks:
-      - process_trace
-      - process_metadata
-      - file_data
-      - memory_usage
-      - quanta_runtime
-      - block_io
-      - perf
       - page_fault
+      - process_trace
+      - memory_usage
+      - mm_rss_stat

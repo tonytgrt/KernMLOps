@@ -15,6 +15,7 @@ from data_collection.bpf_instrumentation.fork_and_exit import TraceProcessHook
 from data_collection.bpf_instrumentation.madvise import MadviseBPFHook
 from data_collection.bpf_instrumentation.memory_usage_hook import MemoryUsageHook
 from data_collection.bpf_instrumentation.mm_rss_stat import TraceRSSStatBPFHook
+from data_collection.bpf_instrumentation.page_fault_hook import PageFaultBPFHook
 from data_collection.bpf_instrumentation.perf import (
     CustomHWConfigManager,
     PerfBPFHook,
@@ -40,6 +41,7 @@ all_hooks: Final[Mapping[str, type[BPFProgram]]] = {
     TraceRSSStatBPFHook.name(): TraceRSSStatBPFHook,
     TraceProcessHook.name(): TraceProcessHook,
     ZswapRuntimeBPFHook.name(): ZswapRuntimeBPFHook,
+    PageFaultBPFHook.name(): PageFaultBPFHook,
 }
 
 def hook_names() -> list[str]:

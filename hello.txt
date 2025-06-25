@@ -1,0 +1,16 @@
+file_data BPF program loaded
+memory_usage BPF program loaded
+process_metadata BPF program loaded
+quanta_runtime BPF program loaded
+block_io BPF program loaded
+perf BPF program loaded
+process_trace BPF program loaded
+page_fault BPF program loaded
+Finished loading BPF programs
+
+Hit Ctrl+C to terminate...
+Started benchmark faux
+END
+END
+Benchmark ran for 0.864891s
+3aaae317-a634-41a9-8e25-25335b167746
