@@ -12,5 +12,8 @@ Hit Ctrl+C to terminate...
 Started benchmark faux
 END
 END
-Benchmark ran for 0.864891s
-3aaae317-a634-41a9-8e25-25335b167746
+Possibly lost 56273 samples
+Possibly lost 56396 samples
+Possibly lost 5042 samples
+Benchmark ran for 2.695856s
+d5fc6696-3d6a-41ab-8123-9df36aef36b8

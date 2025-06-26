@@ -46,7 +46,8 @@ class PageFaultTable(CollectionTable):
         )
 
     def graphs(self) -> list[type[CollectionGraph]]:
-        return [PageFaultRateGraph, MajorFaultGraph]
+        # Only return PageFaultRateGraph for now
+        return [PageFaultRateGraph]
 
     def by_process(self, process_name: str) -> pl.DataFrame:
         """Filter faults by process name"""
@@ -94,6 +95,10 @@ class PageFaultRateGraph(CollectionGraph):
         # Calculate fault rate in 100ms windows
         df = self.page_fault_table.filtered_table()
 
+        if len(df) == 0:
+            print("No page fault data to plot")
+            return
+
         # Group by 100ms windows
         windowed = df.with_columns(
             (pl.col(UPTIME_TIMESTAMP) // 100_000).alias("window")
@@ -101,6 +106,10 @@ class PageFaultRateGraph(CollectionGraph):
             pl.count().alias("fault_count"),
             pl.col("is_major").sum().alias("major_faults")
         ]).sort("window")
+
+        if len(windowed) == 0:
+            print("No windowed data to plot")
+            return
 
         x_data = self.graph_engine.collection_data.normalize_uptime_sec(
             windowed.with_columns(
@@ -111,66 +120,15 @@ class PageFaultRateGraph(CollectionGraph):
         # Plot total and major faults
         self.graph_engine.plot(
             x_data,
-            windowed["fault_count"].to_list() * 10,  # Convert to per second
+            (windowed["fault_count"] * 10).to_list(),  # Convert to per second
             label="Total Faults/sec"
         )
         self.graph_engine.plot(
             x_data,
-            windowed["major_faults"].to_list() * 10,  # Convert to per second
+            (windowed["major_faults"] * 10).to_list(),  # Convert to per second
             label="Major Faults/sec"
         )
 
     def plot_trends(self) -> None:
         # Add trend lines if needed
-        pass
-
-
-class MajorFaultGraph(CollectionGraph):
-    """Graph focusing on major page faults by process"""
-
-    @classmethod
-    def with_graph_engine(cls, graph_engine: GraphEngine) -> CollectionGraph | None:
-        page_fault_table = graph_engine.collection_data.get(PageFaultTable)
-        if page_fault_table is not None:
-            return MajorFaultGraph(
-                graph_engine=graph_engine,
-                page_fault_table=page_fault_table
-            )
-        return None
-
-    @classmethod
-    def base_name(cls) -> str:
-        return "Major Page Faults by Process"
-
-    def name(self) -> str:
-        return f"{self.base_name()} - {self.graph_engine.collection_data.benchmark}"
-
-    def __init__(self, graph_engine: GraphEngine, page_fault_table: PageFaultTable):
-        self.graph_engine = graph_engine
-        self.page_fault_table = page_fault_table
-
-    def x_axis(self) -> str:
-        return "Process"
-
-    def y_axis(self) -> str:
-        return "Major Fault Count"
-
-    def plot(self) -> None:
-        # Get top processes by major fault count
-        major_faults = (
-            self.page_fault_table.filtered_table()
-            .filter(pl.col("is_major"))
-            .group_by("comm")
-            .count()
-            .sort("count", descending=True)
-            .head(10)
-        )
-
-        if len(major_faults) > 0:
-            self.graph_engine.bar(
-                major_faults["comm"].to_list(),
-                major_faults["count"].to_list()
-            )
-
-    def plot_trends(self) -> None:
         pass

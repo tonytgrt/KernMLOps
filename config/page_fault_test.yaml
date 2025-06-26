@@ -3,7 +3,7 @@ benchmark_config:
   generic:
     benchmark: faux
     cpus: 0
-    transparent_hugepages: madvise
+    transparent_hugepages: never
 collector_config:
   generic:
     poll_rate: 0.1

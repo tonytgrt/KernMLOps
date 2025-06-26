@@ -34,7 +34,6 @@ collector_config:
     output_dir: data
     output_graphs: false
     hooks:
-      - page_fault
       - file_data
       - memory_usage
       - process_metadata
@@ -45,3 +44,4 @@ collector_config:
       - mm_rss_stat
       - process_trace
       - zswap_runtime
+      - page_fault
