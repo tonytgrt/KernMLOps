@@ -1,10 +1,3 @@
-file_data BPF program loaded
-memory_usage BPF program loaded
-process_metadata BPF program loaded
-quanta_runtime BPF program loaded
-block_io BPF program loaded
-perf BPF program loaded
-process_trace BPF program loaded
 page_fault BPF program loaded
 Finished loading BPF programs
 
@@ -12,7 +5,5 @@ Hit Ctrl+C to terminate...
 Started benchmark faux
 END
 END
-Possibly lost 6123 samples
-Possibly lost 3419 samples
-Benchmark ran for 3.270866s
-7208043d-ff68-4deb-b93d-50545fa4baa0
+Benchmark ran for 1.268051s
+c8de5dc7-aaa0-4724-9d0a-8995540bc233

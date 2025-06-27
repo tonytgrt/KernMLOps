@@ -5,15 +5,127 @@ quanta_runtime BPF program loaded
 block_io BPF program loaded
 perf BPF program loaded
 process_trace BPF program loaded
-page_fault BPF program loaded
 Finished loading BPF programs
+Could not connect to Redis at 127.0.0.1:6379: Connection refused
+148173:C 27 Jun 2025 16:43:09.509 # WARNING Memory overcommit must be enabled! Without it, a background save or replication may fail under low memory condition. Being disabled, it can also cause failures without low memory condition, see https://github.com/jemalloc/jemalloc/issues/1328. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+148173:C 27 Jun 2025 16:43:09.509 * oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+148173:C 27 Jun 2025 16:43:09.509 * Redis version=7.4.2, bits=64, commit=a0a6f23d, modified=0, pid=148173, just started
+148173:C 27 Jun 2025 16:43:09.509 * Configuration loaded
+148173:M 27 Jun 2025 16:43:09.510 * monotonic clock: POSIX clock_gettime
+148173:M 27 Jun 2025 16:43:09.512 # Failed to write PID file: No such file or directory
+                _._
+           _.-``__ ''-._
+      _.-``    `.  `_.  ''-._           Redis Community Edition
+  .-`` .-```.  ```\/    _.,_ ''-._     7.4.2 (a0a6f23d/0) 64 bit
+ (    '      ,       .-`  | `,    )     Running in standalone mode
+ |`-._`-...-` __...-.``-._|'` _.-'|     Port: 6379
+ |    `-._   `._    /     _.-'    |     PID: 148173
+  `-._    `-._  `-./  _.-'    _.-'
+ |`-._`-._    `-.__.-'    _.-'_.-'|
+ |    `-._`-._        _.-'_.-'    |           https://redis.io
+  `-._    `-._`-.__.-'_.-'    _.-'
+ |`-._`-._    `-.__.-'    _.-'_.-'|
+ |    `-._`-._        _.-'_.-'    |
+  `-._    `-._`-.__.-'_.-'    _.-'
+      `-._    `-.__.-'    _.-'
+          `-._        _.-'
+              `-.__.-'
 
-Hit Ctrl+C to terminate...
-Started benchmark faux
-END
-END
-Possibly lost 56273 samples
-Possibly lost 56396 samples
-Possibly lost 5042 samples
-Benchmark ran for 2.695856s
-d5fc6696-3d6a-41ab-8123-9df36aef36b8
+148173:M 27 Jun 2025 16:43:09.512 * Server initialized
+148173:M 27 Jun 2025 16:43:09.513 * Ready to accept connections tcp
+PONG
+[WARN]  Running against a source checkout. In order to get our runtime dependencies we'll have to invoke Maven. Depending on the state of your system, this may take ~30-45 seconds
+[DEBUG]  Running 'mvn -pl site.ycsb:redis-binding -am package -DskipTests dependency:build-classpath -DincludeScope=compile -Dmdep.outputFilterFile=true'
+[DEBUG]  b'/home/tonytg/kernmlops-benchmark/ycsb/YCSB\n'
+Possibly lost 1128 samples
+java -cp /home/tonytg/kernmlops-benchmark/ycsb/YCSB/redis/conf:/home/tonytg/kernmlops-benchmark/ycsb/YCSB/redis/target/redis-binding-0.18.0-SNAPSHOT.jar:/home/tonytg/.m2/repository/org/apache/htrace/htrace-core4/4.1.0-incubating/htrace-core4-4.1.0-incubating.jar:/home/tonytg/.m2/repository/org/hdrhistogram/HdrHistogram/2.1.12/HdrHistogram-2.1.12.jar:/home/tonytg/.m2/repository/org/codehaus/jackson/jackson-mapper-asl/1.9.4/jackson-mapper-asl-1.9.4.jar:/home/tonytg/.m2/repository/redis/clients/jedis/2.9.0/jedis-2.9.0.jar:/home/tonytg/.m2/repository/org/apache/commons/commons-pool2/2.4.2/commons-pool2-2.4.2.jar:/home/tonytg/.m2/repository/org/codehaus/jackson/jackson-core-asl/1.9.4/jackson-core-asl-1.9.4.jar:/home/tonytg/kernmlops-benchmark/ycsb/YCSB/core/target/core-0.18.0-SNAPSHOT.jar site.ycsb.Client -db site.ycsb.db.RedisClient -s -P /home/tonytg/kernmlops-benchmark/ycsb/YCSB/workloads/workloada -p redis.host=127.0.0.1 -p redis.port=6379 -p recordcount=100 -p fieldcount=256 -p fieldlength=16 -p minfieldlength=16 -p insertstart=0 -p fieldlengthdistribution=uniform -load
+Command line: -db site.ycsb.db.RedisClient -s -P /home/tonytg/kernmlops-benchmark/ycsb/YCSB/workloads/workloada -p redis.host=127.0.0.1 -p redis.port=6379 -p recordcount=100 -p fieldcount=256 -p fieldlength=16 -p minfieldlength=16 -p insertstart=0 -p fieldlengthdistribution=uniform -load
+YCSB Client 0.18.0-SNAPSHOT
+
+Loading workload...
+Starting test.
+DBWrapper: report latency for each error is false and specific error codes to track for latency are: []
+2025-06-27 16:43:43:974 0 sec: 0 operations; est completion in 0 second
+2025-06-27 16:43:44:441 0 sec: 100 operations; 190.48 current ops/sec; [CLEANUP: Count=1, Max=1572, Min=1572, Avg=1572, 90=1572, 99=1572, 99.9=1572, 99.99=1572] [INSERT: Count=100, Max=29247, Min=3352, Avg=4265.5, 90=4535, 99=9911, 99.9=29247, 99.99=29247]
+[OVERALL], RunTime(ms), 525
+[OVERALL], Throughput(ops/sec), 190.47619047619048
+[TOTAL_GCS_G1_Young_Generation], Count, 0
+[TOTAL_GC_TIME_G1_Young_Generation], Time(ms), 0
+[TOTAL_GC_TIME_%_G1_Young_Generation], Time(%), 0.0
+[TOTAL_GCS_G1_Concurrent_GC], Count, 0
+[TOTAL_GC_TIME_G1_Concurrent_GC], Time(ms), 0
+[TOTAL_GC_TIME_%_G1_Concurrent_GC], Time(%), 0.0
+[TOTAL_GCS_G1_Old_Generation], Count, 0
+[TOTAL_GC_TIME_G1_Old_Generation], Time(ms), 0
+[TOTAL_GC_TIME_%_G1_Old_Generation], Time(%), 0.0
+[TOTAL_GCs], Count, 0
+[TOTAL_GC_TIME], Time(ms), 0
+[TOTAL_GC_TIME_%], Time(%), 0.0
+[CLEANUP], Operations, 1
+[CLEANUP], AverageLatency(us), 1572.0
+[CLEANUP], MinLatency(us), 1572
+[CLEANUP], MaxLatency(us), 1572
+[CLEANUP], 95thPercentileLatency(us), 1572
+[CLEANUP], 99thPercentileLatency(us), 1572
+[INSERT], Operations, 100
+[INSERT], AverageLatency(us), 4265.5
+[INSERT], MinLatency(us), 3352
+[INSERT], MaxLatency(us), 29247
+[INSERT], 95thPercentileLatency(us), 5291
+[INSERT], 99thPercentileLatency(us), 9911
+[INSERT], Return=OK, 100
+(integer) 101
+Started benchmark redis
+[WARN]  Running against a source checkout. In order to get our runtime dependencies we'll have to invoke Maven. Depending on the state of your system, this may take ~30-45 seconds
+[DEBUG]  Running 'mvn -pl site.ycsb:redis-binding -am package -DskipTests dependency:build-classpath -DincludeScope=compile -Dmdep.outputFilterFile=true'
+[DEBUG]  b'/home/tonytg/kernmlops-benchmark/ycsb/YCSB\n'
+java -cp /home/tonytg/kernmlops-benchmark/ycsb/YCSB/redis/conf:/home/tonytg/kernmlops-benchmark/ycsb/YCSB/redis/target/redis-binding-0.18.0-SNAPSHOT.jar:/home/tonytg/.m2/repository/org/apache/htrace/htrace-core4/4.1.0-incubating/htrace-core4-4.1.0-incubating.jar:/home/tonytg/.m2/repository/org/hdrhistogram/HdrHistogram/2.1.12/HdrHistogram-2.1.12.jar:/home/tonytg/.m2/repository/org/codehaus/jackson/jackson-mapper-asl/1.9.4/jackson-mapper-asl-1.9.4.jar:/home/tonytg/.m2/repository/redis/clients/jedis/2.9.0/jedis-2.9.0.jar:/home/tonytg/.m2/repository/org/apache/commons/commons-pool2/2.4.2/commons-pool2-2.4.2.jar:/home/tonytg/.m2/repository/org/codehaus/jackson/jackson-core-asl/1.9.4/jackson-core-asl-1.9.4.jar:/home/tonytg/kernmlops-benchmark/ycsb/YCSB/core/target/core-0.18.0-SNAPSHOT.jar site.ycsb.Client -db site.ycsb.db.RedisClient -s -P /home/tonytg/kernmlops-benchmark/ycsb/YCSB/workloads/workloada -p operationcount=100 -p recordcount=100 -p workload=site.ycsb.workloads.CoreWorkload -p readproportion=0.5 -p updateproportion=0.5 -p scanproportion=0.0 -p insertproportion=0.0 -p readmodifywriteproportion=0.0 -p scanproportion=0.0 -p deleteproportion=0.0 -p redis.host=127.0.0.1 -p redis.port=6379 -p requestdistribution=uniform -p threadcount=1 -p target=10000 -p fieldcount=256 -p fieldlength=16 -p minfieldlength=16 -p fieldlengthdistribution=uniform -t
+Command line: -db site.ycsb.db.RedisClient -s -P /home/tonytg/kernmlops-benchmark/ycsb/YCSB/workloads/workloada -p operationcount=100 -p recordcount=100 -p workload=site.ycsb.workloads.CoreWorkload -p readproportion=0.5 -p updateproportion=0.5 -p scanproportion=0.0 -p insertproportion=0.0 -p readmodifywriteproportion=0.0 -p scanproportion=0.0 -p deleteproportion=0.0 -p redis.host=127.0.0.1 -p redis.port=6379 -p requestdistribution=uniform -p threadcount=1 -p target=10000 -p fieldcount=256 -p fieldlength=16 -p minfieldlength=16 -p fieldlengthdistribution=uniform -t
+YCSB Client 0.18.0-SNAPSHOT
+
+Loading workload...
+Starting test.
+DBWrapper: report latency for each error is false and specific error codes to track for latency are: []
+2025-06-27 16:43:54:530 0 sec: 0 operations; est completion in 0 second
+2025-06-27 16:43:54:601 0 sec: 100 operations; 800 current ops/sec; [READ: Count=50, Max=17279, Min=514, Avg=1122.1, 90=987, 99=17279, 99.9=17279, 99.99=17279] [CLEANUP: Count=1, Max=589, Min=589, Avg=589, 90=589, 99=589, 99.9=589, 99.99=589] [UPDATE: Count=50, Max=1091, Min=163, Avg=271.26, 90=327, 99=1091, 99.9=1091, 99.99=1091]
+[OVERALL], RunTime(ms), 125
+[OVERALL], Throughput(ops/sec), 800.0
+[TOTAL_GCS_G1_Young_Generation], Count, 0
+[TOTAL_GC_TIME_G1_Young_Generation], Time(ms), 0
+[TOTAL_GC_TIME_%_G1_Young_Generation], Time(%), 0.0
+[TOTAL_GCS_G1_Concurrent_GC], Count, 0
+[TOTAL_GC_TIME_G1_Concurrent_GC], Time(ms), 0
+[TOTAL_GC_TIME_%_G1_Concurrent_GC], Time(%), 0.0
+[TOTAL_GCS_G1_Old_Generation], Count, 0
+[TOTAL_GC_TIME_G1_Old_Generation], Time(ms), 0
+[TOTAL_GC_TIME_%_G1_Old_Generation], Time(%), 0.0
+[TOTAL_GCs], Count, 0
+[TOTAL_GC_TIME], Time(ms), 0
+[TOTAL_GC_TIME_%], Time(%), 0.0
+[READ], Operations, 50
+[READ], AverageLatency(us), 1122.1
+[READ], MinLatency(us), 514
+[READ], MaxLatency(us), 17279
+[READ], 95thPercentileLatency(us), 1128
+[READ], 99thPercentileLatency(us), 17279
+[READ], Return=OK, 50
+[CLEANUP], Operations, 1
+[CLEANUP], AverageLatency(us), 589.0
+[CLEANUP], MinLatency(us), 589
+[CLEANUP], MaxLatency(us), 589
+[CLEANUP], 95thPercentileLatency(us), 589
+[CLEANUP], 99thPercentileLatency(us), 589
+[UPDATE], Operations, 50
+[UPDATE], AverageLatency(us), 271.26
+[UPDATE], MinLatency(us), 163
+[UPDATE], MaxLatency(us), 1091
+[UPDATE], 95thPercentileLatency(us), 367
+[UPDATE], 99thPercentileLatency(us), 1091
+[UPDATE], Return=OK, 50
+(integer) 101
+148173:signal-handler (1751042635) Received SIGINT scheduling shutdown...
+148173:M 27 Jun 2025 16:43:55.060 * User requested shutdown...
+148173:M 27 Jun 2025 16:43:55.060 * Removing the pid file.
+148173:M 27 Jun 2025 16:43:55.060 # Redis is now ready to exit, bye bye...
+Benchmark ran for 45.794353s
+fe79f411-9647-4698-9679-bf6636f19367
