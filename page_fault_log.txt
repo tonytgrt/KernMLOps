@@ -5,5 +5,5 @@ Hit Ctrl+C to terminate...
 Started benchmark faux
 END
 END
-Benchmark ran for 1.268051s
-c8de5dc7-aaa0-4724-9d0a-8995540bc233
+Benchmark ran for 1.349938s
+5fa97f45-09bf-4dea-893f-3a9d4cc84a19
