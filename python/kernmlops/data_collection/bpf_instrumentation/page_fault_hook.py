@@ -30,7 +30,7 @@ class PageFaultBPFHook(BPFProgram):
     def __init__(self):
         bpf_text = open(Path(__file__).parent / "bpf/page_fault.bpf.c", "r").read()
 
-        # Handle kernel version differences
+        # Handle kernel version differences for fault flags
         if BPF.kernel_struct_has_field(b'vm_fault', b'flags') == 1:
             bpf_text = bpf_text.replace('FAULT_FLAG_WRITE', '0x01')
             bpf_text = bpf_text.replace('FAULT_FLAG_INSTRUCTION', '0x100')
@@ -44,6 +44,12 @@ class PageFaultBPFHook(BPFProgram):
     def load(self, collection_id: str):
         self.collection_id = collection_id
         self.bpf = BPF(text=self.bpf_text)
+
+        # Attach kprobe and kretprobe with explicit function names
+        self.bpf.attach_kprobe(event=b"handle_mm_fault", fn_name=b"trace_handle_mm_fault_entry")
+        self.bpf.attach_kretprobe(event=b"handle_mm_fault", fn_name=b"trace_handle_mm_fault_return")
+
+        # Open perf buffer for receiving events
         self.bpf["page_fault_events"].open_perf_buffer(
             self._page_fault_handler, page_cnt=128
         )
@@ -71,8 +77,9 @@ class PageFaultBPFHook(BPFProgram):
                     comm=event.comm.decode('utf-8', 'replace')
                 )
             )
-        except Exception:
-            pass
+        except Exception as e:
+            # Log errors for debugging
+            print(f"Error handling page fault event: {e}")
 
     def data(self) -> list[CollectionTable]:
         from data_schema.page_fault import PageFaultTable

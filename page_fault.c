@@ -18,8 +18,15 @@ void print_page_faults(const char* label) {
   }
 }
 
+void print_pid() {
+  printf("Process PID: %d\n", getpid());
+  printf("----------------------------\n");
+}
+
 int main(int argc, char* argv[]) {
   const char* filename = "./test_page_fault_file.dat";
+
+  print_pid();
 
   if (argc > 1 && strcmp(argv[1], "create") == 0) {
     // Step 1: Create the file

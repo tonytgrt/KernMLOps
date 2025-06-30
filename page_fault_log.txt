@@ -1,3 +1,10 @@
+/virtual/main.c:7:9: warning: 'VM_FAULT_ERROR' macro redefined [-Wmacro-redefined]
+    7 | #define VM_FAULT_ERROR 0x0001
+      |         ^
+include/linux/mm_types.h:1172:9: note: previous definition is here
+ 1172 | #define VM_FAULT_ERROR (VM_FAULT_OOM | VM_FAULT_SIGBUS |        \
+      |         ^
+1 warning generated.
 page_fault BPF program loaded
 Finished loading BPF programs
 
@@ -5,5 +12,5 @@ Hit Ctrl+C to terminate...
 Started benchmark faux
 END
 END
-Benchmark ran for 1.349938s
-5fa97f45-09bf-4dea-893f-3a9d4cc84a19
+Benchmark ran for 1.33862s
+89c1f5e1-dd3f-4fc1-b1d5-6b430d6b1621
