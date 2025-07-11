@@ -45,3 +45,4 @@ collector_config:
       - process_trace
       - zswap_runtime
       - page_fault
+      - tcp_v4_rcv

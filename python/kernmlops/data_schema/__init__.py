@@ -22,6 +22,7 @@ from data_schema.schema import (
     collection_id_column,
     cumulative_pma_as_pdf,
 )
+from data_schema.tcp_v4_rcv import TcpV4RcvTable
 
 table_types: list[type[CollectionTable]] = [
     SystemInfoTable,
@@ -35,6 +36,7 @@ table_types: list[type[CollectionTable]] = [
     BlockIOTable,
     CollapseHugePageDataTable,
     PageFaultTable,
+    TcpV4RcvTable,
 ] + list(perf.perf_table_types.values())
 
 

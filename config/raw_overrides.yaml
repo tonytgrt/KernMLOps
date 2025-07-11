@@ -10,4 +10,4 @@ collector_config:
     output_dir: data
     output_graphs: false
     hooks:
-      - page_fault
+      - tcp_v4_rcv
