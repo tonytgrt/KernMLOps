@@ -1,0 +1,26 @@
+---
+benchmark_config:
+  generic:
+    benchmark: xsbench
+    cpus: 0
+    skip_clear_page_cache: false
+    transparent_hugepages: always
+    overcommit_memory: heuristic
+  xsbench:
+    threads: 4
+    grid_points: 11303
+    lookups: 15000000
+    implementation: "openmp-threading"
+    problem_size: "large"
+    mode: "history"
+collector_config:
+  generic:
+    poll_rate: 0.1
+    output_dir: data
+    output_graphs: false
+    hooks:
+      - tcp_v4_rcv
+      - page_fault
+      - mm_rss_stat
+      - process_trace
+      - perf
