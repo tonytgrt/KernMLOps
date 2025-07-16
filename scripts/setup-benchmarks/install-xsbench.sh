@@ -8,7 +8,11 @@ if [ -d $XSBENCH_DIR ]; then
     exit 0
 fi
 
-# Clone and build XSBench
+# Clone XSBench
 git clone https://github.com/ANL-CESAR/XSBench.git $XSBENCH_DIR
-cd $XSBENCH_DIR
+
+# Build the openmp-threading version (default CPU version)
+cd $XSBENCH_DIR/openmp-threading
 make
+
+echo "XSBench installation complete"

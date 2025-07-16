@@ -255,6 +255,15 @@ setup-mongodb:
 	@echo "Setting up storage for mongodb benchmark..."
 	@source scripts/setup-benchmarks/setup-mongodb.sh
 
+install-xsbench:
+	@echo "Installing XSBench..."
+	@su ${UNAME} -c "bash scripts/setup-benchmarks/install-xsbench.sh"
+
+benchmark-xsbench:
+	@python python/kernmlops collect -v \
+		-c ${KERNMLOPS_CONFIG_FILE} \
+		--benchmark xsbench
+
 # Miscellaneous commands
 clean-docker-images:
 	docker --context ${CONTAINER_CONTEXT} image list \

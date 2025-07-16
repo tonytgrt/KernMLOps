@@ -16,7 +16,9 @@ class XSBenchConfig(ConfigBase):
     threads: int = 1
     grid_points: int = 11303
     lookups: int = 15000000
-    # ... other parameters
+    implementation: str = "openmp-threading"  # or "cuda", "hip", etc.
+    problem_size: str = "large"  # "small", "large", "XL", "XXL"
+    mode: str = "history"  # "history" or "event"
 
 class XSBenchBenchmark(Benchmark):
     @classmethod
@@ -50,10 +52,12 @@ class XSBenchBenchmark(Benchmark):
     def run(self) -> None:
         # Launch xsbench with appropriate parameters
         run_cmd = [
-            f"{self.benchmark_dir}/XSBench",
+            f"{self.benchmark_dir}/{self.config.implementation}/XSBench",
             "-t", str(self.config.threads),
             "-g", str(self.config.grid_points),
-            "-l", str(self.config.lookups)
+            "-l", str(self.config.lookups),
+            "-s", self.config.problem_size,
+            "-m", self.config.mode
         ]
         self.process = subprocess.Popen(run_cmd)
 
