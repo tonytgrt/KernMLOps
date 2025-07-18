@@ -18,6 +18,7 @@ from kernmlops_benchmark.linux_build import LinuxBuildBenchmark
 from kernmlops_benchmark.memcached import MemcachedBenchmark
 from kernmlops_benchmark.mongodb import MongoDbBenchmark
 from kernmlops_benchmark.redis import RedisBenchmark
+from kernmlops_benchmark.webserving import WebServingBenchmark
 from kernmlops_benchmark.xsbench import XSBenchBenchmark
 from kernmlops_config import ConfigBase
 
@@ -29,6 +30,7 @@ benchmarks: Mapping[str, type[Benchmark]] = {
     LinnosBenchmark.name(): LinnosBenchmark,
     RedisBenchmark.name(): RedisBenchmark,
     XSBenchBenchmark.name(): XSBenchBenchmark,
+    WebServingBenchmark.name(): WebServingBenchmark,
     MemcachedBenchmark.name(): MemcachedBenchmark
 }
 

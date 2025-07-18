@@ -264,6 +264,21 @@ benchmark-xsbench:
 		-c ${KERNMLOPS_CONFIG_FILE} \
 		--benchmark xsbench
 
+install-webserving:
+	@echo "Installing CloudSuite WebServing..."
+	@bash scripts/setup-benchmarks/install-webserving.sh
+
+benchmark-webserving:
+	@python python/kernmlops collect -v \
+		-c ${KERNMLOPS_CONFIG_FILE} \
+		--benchmark webserving
+
+clean-webserving:
+	@echo "Cleaning up WebServing containers..."
+	@docker stop webserving-db webserving-memcached webserving-web webserving-client 2>/dev/null || true
+	@docker rm webserving-db webserving-memcached webserving-web webserving-client 2>/dev/null || true
+	@docker network rm webserving-net 2>/dev/null || true
+
 # Miscellaneous commands
 clean-docker-images:
 	docker --context ${CONTAINER_CONTEXT} image list \

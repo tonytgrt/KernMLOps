@@ -1,0 +1,25 @@
+---
+benchmark_config:
+  generic:
+    benchmark: webserving
+    cpus: 0
+    skip_clear_page_cache: false
+    transparent_hugepages: always
+    overcommit_memory: heuristic
+  webserving:
+    protocol: "http"
+    load_scale: 1
+    max_pm_children: 80
+    worker_process: 4
+    network_name: "webserving-net"
+collector_config:
+  generic:
+    poll_rate: 0.1
+    output_dir: data
+    output_graphs: false
+    hooks:
+      - tcp_v4_rcv
+      - page_fault
+      - mm_rss_stat
+      - process_trace
+      - perf
