@@ -279,6 +279,21 @@ clean-webserving:
 	@docker rm webserving-db webserving-memcached webserving-web webserving-client 2>/dev/null || true
 	@docker network rm webserving-net 2>/dev/null || true
 
+install-nginxwrk:
+	@echo "Installing Nginx+Wrk benchmark..."
+	@bash scripts/setup-benchmarks/install-nginxwrk.sh
+
+benchmark-nginxwrk:
+	@python python/kernmlops collect -v \
+		-c ${KERNMLOPS_CONFIG_FILE} \
+		--benchmark nginxwrk
+
+clean-nginxwrk:
+	@echo "Cleaning up Nginx+Wrk benchmark..."
+	@pkill -f "nginx.*nginxwrk" || true
+	@rm -rf ${BENCHMARK_DIR}/nginxwrk/nginx/logs/*
+	@rm -rf ${BENCHMARK_DIR}/nginxwrk/nginx/temp/*
+
 # Miscellaneous commands
 clean-docker-images:
 	docker --context ${CONTAINER_CONTEXT} image list \

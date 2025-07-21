@@ -1,0 +1,29 @@
+---
+benchmark_config:
+  generic:
+    benchmark: nginxwrk
+    cpus: 0
+    skip_clear_page_cache: false
+    transparent_hugepages: always
+    overcommit_memory: heuristic
+  nginxwrk:
+    nginx_port: 8080
+    nginx_workers: 4
+    wrk_threads: 4
+    wrk_connections: 400
+    wrk_duration: "30s"
+    wrk_timeout: "30s"
+    request_path: "/index.html"
+    request_rate: 0  # 0 means no rate limit
+collector_config:
+  generic:
+    poll_rate: 0.1
+    output_dir: data
+    output_graphs: false
+    hooks:
+      - tcp_v4_rcv
+      - page_fault
+      - mm_rss_stat
+      - process_trace
+      - perf
+      - softirq
