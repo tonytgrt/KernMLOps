@@ -13,6 +13,7 @@ from kernmlops_benchmark.errors import (
     BenchmarkRunningError,
 )
 from kernmlops_benchmark.gap import GapBenchmark
+from kernmlops_benchmark.iperf import IperfBenchmark
 from kernmlops_benchmark.linnos import LinnosBenchmark
 from kernmlops_benchmark.linux_build import LinuxBuildBenchmark
 from kernmlops_benchmark.memcached import MemcachedBenchmark
@@ -33,6 +34,7 @@ benchmarks: Mapping[str, type[Benchmark]] = {
     XSBenchBenchmark.name(): XSBenchBenchmark,
     WebServingBenchmark.name(): WebServingBenchmark,
     NginxWrkBenchmark.name(): NginxWrkBenchmark,
+    IperfBenchmark.name(): IperfBenchmark,
     MemcachedBenchmark.name(): MemcachedBenchmark
 }
 

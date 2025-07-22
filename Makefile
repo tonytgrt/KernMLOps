@@ -294,6 +294,29 @@ clean-nginxwrk:
 	@rm -rf ${BENCHMARK_DIR}/nginxwrk/nginx/logs/*
 	@rm -rf ${BENCHMARK_DIR}/nginxwrk/nginx/temp/*
 
+install-iperf:
+	@echo "Installing iperf3..."
+	@bash scripts/setup-benchmarks/install-iperf.sh
+
+benchmark-iperf:
+	@python python/kernmlops collect -v \
+		-c ${KERNMLOPS_CONFIG_FILE} \
+		--benchmark iperf
+
+benchmark-iperf-highperf:
+	@python python/kernmlops collect -v \
+		-c config/iperf_highperf.yaml \
+		--benchmark iperf
+
+clean-iperf:
+	@echo "Cleaning up iperf benchmark..."
+	@pkill -f "iperf3.*-s" || true
+	@rm -rf ${BENCHMARK_DIR}/iperf/results.json
+
+test-iperf:
+	@echo "Testing iperf3 installation..."
+	@iperf3 --version || echo "iperf3 not installed"
+
 # Miscellaneous commands
 clean-docker-images:
 	docker --context ${CONTAINER_CONTEXT} image list \

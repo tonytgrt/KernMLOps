@@ -1,0 +1,31 @@
+---
+benchmark_config:
+  generic:
+    benchmark: iperf
+    cpus: 0
+    skip_clear_page_cache: true  # Skip in Docker
+    transparent_hugepages: "no_change"  # Don't modify in Docker
+    overcommit_memory: "no_change"  # Don't modify in Docker
+  iperf:
+    server_port: 5201
+    server_bind: "127.0.0.1"  # Localhost only for Docker
+    client_target: "127.0.0.1"
+    client_duration: 15  # Quick test
+    client_parallel: 1  # Single stream for simplicity
+    client_bandwidth: "5M"  # Very limited bandwidth
+    client_buffer_length: "16K"  # Small buffer
+    client_window_size: "0"
+    client_mss: 0
+    reverse: false
+    bidirectional: false
+    zero_copy: false
+    no_delay: false
+    json_output: true
+    interval: 1
+collector_config:
+  generic:
+    poll_rate: 0.5  # Less frequent polling
+    output_dir: data
+    output_graphs: false
+    hooks:
+      - tcp_v4_rcv  # Only TCP hook for minimal overhead

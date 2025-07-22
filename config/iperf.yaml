@@ -1,0 +1,37 @@
+---
+benchmark_config:
+  generic:
+    benchmark: iperf
+    cpus: 0
+    skip_clear_page_cache: false
+    transparent_hugepages: always
+    overcommit_memory: heuristic
+  iperf:
+    server_port: 5201
+    server_bind: "0.0.0.0"
+    client_target: "localhost"
+    client_duration: 30
+    client_parallel: 4
+    client_bandwidth: "0"  # Unlimited
+    client_buffer_length: "128K"
+    client_window_size: "0"  # System default
+    client_mss: 0  # Default
+    reverse: false
+    bidirectional: false
+    zero_copy: false
+    no_delay: false
+    json_output: true
+    interval: 1
+collector_config:
+  generic:
+    poll_rate: 0.1
+    output_dir: data
+    output_graphs: false
+    hooks:
+      - tcp_v4_rcv
+      - page_fault
+      - mm_rss_stat
+      - process_trace
+      - perf
+      - softirq
+      - tcp_events
