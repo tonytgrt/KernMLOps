@@ -7,10 +7,10 @@ benchmark_config:
     transparent_hugepages: "no_change"  # Don't modify in Docker
     overcommit_memory: "no_change"  # Don't modify in Docker
   iperf:
-    server_port: 5201
-    server_bind: "127.0.0.1"  # Localhost only for Docker
-    client_target: "127.0.0.1"
-    client_duration: 15  # Quick test
+    server_port: 5555  # Non-standard port to avoid conflicts
+    server_bind: "127.0.0.1"  # Explicit IP instead of 0.0.0.0
+    client_target: "127.0.0.1"  # Explicit IP instead of localhost
+    client_duration: 10  # Shorter test
     client_parallel: 1  # Single stream for simplicity
     client_bandwidth: "5M"  # Very limited bandwidth
     client_buffer_length: "16K"  # Small buffer
