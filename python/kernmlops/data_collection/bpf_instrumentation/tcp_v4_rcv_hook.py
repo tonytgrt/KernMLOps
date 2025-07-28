@@ -8,7 +8,7 @@ from bcc import BPF
 from data_collection.bpf_instrumentation.bpf_hook import POLL_TIMEOUT_MS, BPFProgram
 from data_schema import CollectionTable
 
-# Branch type constants
+# Branch type constants - expanded set
 TCP_BRANCH_ENTRY = 0
 TCP_BRANCH_NOT_FOR_HOST = 1
 TCP_BRANCH_NO_SOCKET = 2
@@ -18,6 +18,17 @@ TCP_BRANCH_LISTEN = 5
 TCP_BRANCH_SOCKET_BUSY = 6
 TCP_BRANCH_XFRM_DROP = 7
 TCP_BRANCH_NEW_SYN_RECV = 8
+# New branch types
+TCP_BRANCH_PKT_TOO_SMALL = 9
+TCP_BRANCH_MIN_TTL_DROP = 10
+TCP_BRANCH_SOCKET_FILTER = 11
+TCP_BRANCH_DO_RCV_CALL = 12
+TCP_BRANCH_MD5_FAIL = 13
+TCP_BRANCH_BACKLOG_ADD = 14
+TCP_BRANCH_REQ_STOLEN = 15
+TCP_BRANCH_LISTEN_DROP = 16
+TCP_BRANCH_RST_SENT = 17
+TCP_BRANCH_ESTABLISHED = 18
 
 BRANCH_NAMES = {
     TCP_BRANCH_ENTRY: "entry",
@@ -28,15 +39,29 @@ BRANCH_NAMES = {
     TCP_BRANCH_LISTEN: "listen_state",
     TCP_BRANCH_SOCKET_BUSY: "socket_busy",
     TCP_BRANCH_XFRM_DROP: "xfrm_policy_drop",
-    TCP_BRANCH_NEW_SYN_RECV: "new_syn_recv"
+    TCP_BRANCH_NEW_SYN_RECV: "new_syn_recv",
+    # New branches
+    TCP_BRANCH_PKT_TOO_SMALL: "pkt_too_small",
+    TCP_BRANCH_MIN_TTL_DROP: "min_ttl_drop",
+    TCP_BRANCH_SOCKET_FILTER: "socket_filter_drop",
+    TCP_BRANCH_DO_RCV_CALL: "do_rcv_direct",
+    TCP_BRANCH_MD5_FAIL: "md5_hash_fail",
+    TCP_BRANCH_BACKLOG_ADD: "backlog_add",
+    TCP_BRANCH_REQ_STOLEN: "req_stolen",
+    TCP_BRANCH_LISTEN_DROP: "listen_overflow",
+    TCP_BRANCH_RST_SENT: "rst_sent",
+    TCP_BRANCH_ESTABLISHED: "established_proc"
 }
 
 DROP_REASON_NAMES = {
     0: "none",
     2: "not_specified",
     3: "no_socket",
+    4: "pkt_too_small",
     5: "tcp_csum",
-    14: "xfrm_policy"
+    6: "socket_filter",
+    14: "xfrm_policy",
+    70: "tcp_minttl"
 }
 
 
@@ -69,7 +94,7 @@ class TcpV4RcvBPFHook(BPFProgram):
         self.tcp_branch_data = list[TcpBranchData]()
 
         # Kernel-specific offsets for branch points
-        # These may need adjustment for different kernel versions
+        # Original offsets
         self.branch_offsets = {
             "trace_not_for_host": 0x73,
             "trace_no_socket": 0x722,
@@ -78,7 +103,18 @@ class TcpV4RcvBPFHook(BPFProgram):
             "trace_listen_state": 0xedf,
             "trace_socket_busy": 0xec2,
             "trace_xfrm_policy_drop": 0x8e5,
-            "trace_new_syn_recv": 0x5db
+            "trace_new_syn_recv": 0x5db,
+            # Additional offsets from disassembly analysis
+            "trace_pkt_too_small": 0x632,     # Header too small check
+            "trace_min_ttl_drop": 0xc93,      # Min TTL drop location
+            "trace_socket_filter_drop": 0x9e4, # Socket filter drop
+            "trace_do_rcv_call": 0x9b5,       # tcp_v4_do_rcv call
+            "trace_md5_fail": 0x60e,           # MD5 hash check failure
+            "trace_backlog_add": 0xbcc,        # tcp_add_backlog call
+            "trace_req_stolen": 0xa0a,         # Request stolen path
+            "trace_listen_drop": 0xbfe,        # Listen state drop
+            "trace_rst_sent": 0x76f,           # tcp_v4_send_reset call
+            "trace_established": 0xc6e         # Established socket path
         }
 
     def load(self, collection_id: str):
@@ -87,8 +123,12 @@ class TcpV4RcvBPFHook(BPFProgram):
 
         # Attach main entry probe
         self.bpf.attach_kprobe(event=b"tcp_v4_rcv", fn_name=b"trace_tcp_v4_rcv")
+        print("✓ Attached main entry probe")
 
         # Attach offset-based probes
+        attached_count = 0
+        failed_count = 0
+
         for fn_name, offset in self.branch_offsets.items():
             try:
                 self.bpf.attach_kprobe(
@@ -96,8 +136,14 @@ class TcpV4RcvBPFHook(BPFProgram):
                     fn_name=fn_name.encode(),
                     event_off=offset
                 )
+                attached_count += 1
             except Exception as e:
                 print(f"Warning: Failed to attach {fn_name} at offset 0x{offset:x}: {e}")
+                failed_count += 1
+
+        print(f"✓ Successfully attached {attached_count} offset probes")
+        if failed_count > 0:
+            print(f"⚠ Failed to attach {failed_count} offset probes (kernel version mismatch)")
 
         # Open perf buffer
         self.bpf["tcp_branch_events"].open_perf_buffer(
@@ -159,3 +205,28 @@ class TcpV4RcvBPFHook(BPFProgram):
         tables = self.data()
         self.clear()
         return tables
+
+    def get_statistics(self) -> dict:
+        """Get current statistics for monitoring"""
+        if not self.tcp_branch_data:
+            return {}
+
+        df = pl.DataFrame(self.tcp_branch_data)
+
+        # Branch distribution
+        branch_stats = df.group_by("branch_name").count().sort("count", descending=True)
+
+        # Drop statistics
+        drops = df.filter(pl.col("drop_reason") > 0)
+        drop_stats = drops.group_by("drop_reason_name").count() if len(drops) > 0 else None
+
+        # Process statistics
+        process_stats = df.group_by("comm").count().sort("count", descending=True).head(10)
+
+        return {
+            "total_events": len(df),
+            "branch_distribution": branch_stats,
+            "drop_statistics": drop_stats,
+            "top_processes": process_stats,
+            "unique_connections": df.select(["saddr", "daddr", "sport", "dport"]).unique().height
+        }
