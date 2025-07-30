@@ -104,7 +104,6 @@ class TcpV4RcvBPFHook(BPFProgram):
             "trace_socket_busy": 0xec2,
             "trace_xfrm_policy_drop": 0x8e5,
             "trace_new_syn_recv": 0x5db,
-            # Additional offsets from disassembly analysis
             "trace_pkt_too_small": 0x632,     # Header too small check
             "trace_min_ttl_drop": 0xc93,      # Min TTL drop location
             "trace_socket_filter_drop": 0x9e4, # Socket filter drop
