@@ -1,25 +1,15 @@
-Traceback (most recent call last):
-  File "/KernMLOps/python/kernmlops/cli/__init__.py", line 179, in main
-    cli.main(prog_name="kernmlops")
-  File "/usr/local/lib/python3.12/dist-packages/click/core.py", line 1082, in main
-    rv = self.invoke(ctx)
-         ^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/click/core.py", line 1697, in invoke
-    return _process_result(sub_ctx.command.invoke(sub_ctx))
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/click/core.py", line 1697, in invoke
-    return _process_result(sub_ctx.command.invoke(sub_ctx))
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/click/core.py", line 1443, in invoke
-    return ctx.invoke(self.callback, **ctx.params)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/click/core.py", line 788, in invoke
-    return __callback(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/KernMLOps/python/kernmlops/cli/__init__.py", line 65, in cli_collect_data
-    collect.run_collect(
-  File "/KernMLOps/python/kernmlops/cli/collect.py", line 105, in run_collect
-    raise BenchmarkNotConfiguredError(f"benchmark {benchmark.name()} is not configured")
-kernmlops_benchmark.errors.BenchmarkNotConfiguredError: benchmark redis is not configured
+/virtual/main.c:7:9: warning: 'VM_FAULT_ERROR' macro redefined [-Wmacro-redefined]
+    7 | #define VM_FAULT_ERROR 0x0001
+      |         ^
+include/linux/mm_types.h:1172:9: note: previous definition is here
+ 1172 | #define VM_FAULT_ERROR (VM_FAULT_OOM | VM_FAULT_SIGBUS |        \
+      |         ^
+1 warning generated.
+page_fault BPF program loaded
+✓ Attached main entry probe
+✓ Successfully attached 18 offset probes
+tcp_v4_rcv BPF program loaded
+Finished loading BPF programs
 
-make: *** [Makefile:107: collect-data] Error 1
+Hit Ctrl+C to terminate...
+Started benchmark faux

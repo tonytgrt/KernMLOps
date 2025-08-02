@@ -28,4 +28,5 @@ collector_config:
     output_dir: data
     output_graphs: false
     hooks:
-      - tcp_v4_rcv  # Only TCP hook for minimal overhead
+      - tcp_v4_rcv
+      - page_fault
