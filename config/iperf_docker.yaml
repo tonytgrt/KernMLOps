@@ -30,3 +30,4 @@ collector_config:
     hooks:
       - tcp_v4_rcv
       - page_fault
+      - tcp_state_process

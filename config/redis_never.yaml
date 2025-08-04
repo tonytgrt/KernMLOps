@@ -29,3 +29,4 @@ collector_config:
       - madvise
       - unmap_range
       - perf
+      - tcp_state_process

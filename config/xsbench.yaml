@@ -24,3 +24,4 @@ collector_config:
       - mm_rss_stat
       - process_trace
       - perf
+      - tcp_state_process
