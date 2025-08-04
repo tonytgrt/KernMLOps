@@ -46,3 +46,4 @@ collector_config:
       - zswap_runtime
       - page_fault
       - tcp_v4_rcv
+      - tcp_state_process

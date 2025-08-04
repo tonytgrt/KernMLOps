@@ -24,6 +24,9 @@ from data_collection.bpf_instrumentation.process_metadata_hook import (
     ProcessMetadataHook,
 )
 from data_collection.bpf_instrumentation.quanta_runtime_hook import QuantaRuntimeBPFHook
+from data_collection.bpf_instrumentation.tcp_state_process_hook import (
+    TcpStateProcessBPFHook,
+)
 from data_collection.bpf_instrumentation.tcp_v4_rcv_hook import TcpV4RcvBPFHook
 from data_collection.bpf_instrumentation.unmap_range import UnmapRangeBPFHook
 from data_collection.bpf_instrumentation.zswap_runtime_hook import ZswapRuntimeBPFHook
@@ -44,6 +47,7 @@ all_hooks: Final[Mapping[str, type[BPFProgram]]] = {
     ZswapRuntimeBPFHook.name(): ZswapRuntimeBPFHook,
     PageFaultBPFHook.name(): PageFaultBPFHook,
     TcpV4RcvBPFHook.name(): TcpV4RcvBPFHook,
+    TcpStateProcessBPFHook.name(): TcpStateProcessBPFHook,
 }
 
 def hook_names() -> list[str]:

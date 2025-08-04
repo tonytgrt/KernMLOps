@@ -22,6 +22,7 @@ from data_schema.schema import (
     collection_id_column,
     cumulative_pma_as_pdf,
 )
+from data_schema.tcp_state_process import TcpStateProcessTable, TcpStateStatsTable
 from data_schema.tcp_v4_rcv import TcpV4RcvTable
 
 table_types: list[type[CollectionTable]] = [
@@ -37,6 +38,8 @@ table_types: list[type[CollectionTable]] = [
     CollapseHugePageDataTable,
     PageFaultTable,
     TcpV4RcvTable,
+    TcpStateProcessTable,
+    TcpStateStatsTable,
 ] + list(perf.perf_table_types.values())
 
 
