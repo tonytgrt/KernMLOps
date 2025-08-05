@@ -23,6 +23,7 @@ from data_schema.schema import (
     cumulative_pma_as_pdf,
 )
 from data_schema.tcp_state_process import TcpStateProcessTable, TcpStateStatsTable
+from data_schema.tcp_v4_connect import TcpConnectStatsTable, TcpV4ConnectTable
 from data_schema.tcp_v4_rcv import TcpV4RcvTable
 
 table_types: list[type[CollectionTable]] = [
@@ -40,6 +41,8 @@ table_types: list[type[CollectionTable]] = [
     TcpV4RcvTable,
     TcpStateProcessTable,
     TcpStateStatsTable,
+    TcpV4ConnectTable,
+    TcpConnectStatsTable,
 ] + list(perf.perf_table_types.values())
 
 

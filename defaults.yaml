@@ -47,3 +47,4 @@ collector_config:
       - page_fault
       - tcp_v4_rcv
       - tcp_state_process
+      - tcp_v4_connect
