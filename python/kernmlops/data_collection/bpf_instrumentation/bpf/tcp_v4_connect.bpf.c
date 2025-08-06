@@ -3,11 +3,17 @@
 #include <linux/bpf.h>
 #include <linux/if_ether.h>
 #include <linux/ip.h>
+#include <linux/sched.h>
 #include <linux/socket.h>
 #include <linux/tcp.h>
 #include <net/inet_sock.h>
 #include <net/sock.h>
 #include <uapi/linux/ptrace.h>
+
+// Define missing macros if not already defined by BCC
+#ifndef TASK_COMM_LEN
+#define TASK_COMM_LEN 16
+#endif
 
 // Branch types for tcp_v4_connect
 #define CONNECT_ENTRY           0
@@ -136,7 +142,13 @@ int trace_invalid_addrlen(struct pt_regs* ctx) {
     if (count)
       (*count)++;
 
-    u64* err_count = error_stats.lookup_or_init(&(u64){1}, &(u64){0});
+    u64 idx = 1;
+    u64 zero = 0;
+    u64* err_count = error_stats.lookup(&idx);
+    if (!err_count) {
+      error_stats.update(&idx, &zero);
+      err_count = error_stats.lookup(&idx);
+    }
     if (err_count)
       (*err_count)++;
   }
@@ -166,7 +178,13 @@ int trace_wrong_family(struct pt_regs* ctx) {
     if (count)
       (*count)++;
 
-    u64* err_count = error_stats.lookup_or_init(&(u64){2}, &(u64){0});
+    u64 idx = 2;
+    u64 zero = 0;
+    u64* err_count = error_stats.lookup(&idx);
+    if (!err_count) {
+      error_stats.update(&idx, &zero);
+      err_count = error_stats.lookup(&idx);
+    }
     if (err_count)
       (*err_count)++;
   }
@@ -211,7 +229,8 @@ int trace_route_error(struct pt_regs* ctx) {
 
     event->ts_uptime_us = ts / 1000;
     event->branch_type = CONNECT_ROUTE_ERROR;
-    event->error_code = PT_REGS_RC(ctx);
+    // Note: We can't reliably get the error code from registers in all contexts
+    event->error_code = -1;
     event->path_type = PATH_ERROR;
 
     connect_events.perf_submit(ctx, event, sizeof(*event));
@@ -220,7 +239,13 @@ int trace_route_error(struct pt_regs* ctx) {
     if (count)
       (*count)++;
 
-    u64* err_count = error_stats.lookup_or_init(&(u64){3}, &(u64){0});
+    u64 idx = 3;
+    u64 zero = 0;
+    u64* err_count = error_stats.lookup(&idx);
+    if (!err_count) {
+      error_stats.update(&idx, &zero);
+      err_count = error_stats.lookup(&idx);
+    }
     if (err_count)
       (*err_count)++;
   }
@@ -250,7 +275,13 @@ int trace_multicast_bcast(struct pt_regs* ctx) {
     if (count)
       (*count)++;
 
-    u64* err_count = error_stats.lookup_or_init(&(u64){4}, &(u64){0});
+    u64 idx = 4;
+    u64 zero = 0;
+    u64* err_count = error_stats.lookup(&idx);
+    if (!err_count) {
+      error_stats.update(&idx, &zero);
+      err_count = error_stats.lookup(&idx);
+    }
     if (err_count)
       (*err_count)++;
   }
@@ -295,7 +326,7 @@ int trace_src_bind_fail(struct pt_regs* ctx) {
 
     event->ts_uptime_us = ts / 1000;
     event->branch_type = CONNECT_SRC_BIND_FAIL;
-    event->error_code = PT_REGS_RC(ctx);
+    event->error_code = -1;
     event->path_type = PATH_ERROR;
 
     connect_events.perf_submit(ctx, event, sizeof(*event));
@@ -304,7 +335,13 @@ int trace_src_bind_fail(struct pt_regs* ctx) {
     if (count)
       (*count)++;
 
-    u64* err_count = error_stats.lookup_or_init(&(u64){5}, &(u64){0});
+    u64 idx = 5;
+    u64 zero = 0;
+    u64* err_count = error_stats.lookup(&idx);
+    if (!err_count) {
+      error_stats.update(&idx, &zero);
+      err_count = error_stats.lookup(&idx);
+    }
     if (err_count)
       (*err_count)++;
   }
@@ -382,7 +419,13 @@ int trace_fastopen_defer(struct pt_regs* ctx) {
     if (count)
       (*count)++;
 
-    u64* path_count = path_stats.lookup_or_init(&event->path_type, &(u64){0});
+    u64 idx = PATH_FASTOPEN;
+    u64 zero = 0;
+    u64* path_count = path_stats.lookup(&idx);
+    if (!path_count) {
+      path_stats.update(&idx, &zero);
+      path_count = path_stats.lookup(&idx);
+    }
     if (path_count)
       (*path_count)++;
   }
@@ -411,7 +454,13 @@ int trace_regular_syn(struct pt_regs* ctx) {
     if (count)
       (*count)++;
 
-    u64* path_count = path_stats.lookup_or_init(&event->path_type, &(u64){0});
+    u64 idx = PATH_SLOW;
+    u64 zero = 0;
+    u64* path_count = path_stats.lookup(&idx);
+    if (!path_count) {
+      path_stats.update(&idx, &zero);
+      path_count = path_stats.lookup(&idx);
+    }
     if (path_count)
       (*path_count)++;
   }
@@ -432,7 +481,7 @@ int trace_tcp_connect_err(struct pt_regs* ctx) {
 
     event->ts_uptime_us = ts / 1000;
     event->branch_type = CONNECT_TCP_CONNECT_ERR;
-    event->error_code = PT_REGS_RC(ctx);
+    event->error_code = -1;
     event->path_type = PATH_ERROR;
 
     connect_events.perf_submit(ctx, event, sizeof(*event));
@@ -540,7 +589,13 @@ int trace_error_path(struct pt_regs* ctx) {
     if (count)
       (*count)++;
 
-    u64* path_count = path_stats.lookup_or_init(&event->path_type, &(u64){0});
+    u64 idx = PATH_ERROR;
+    u64 zero = 0;
+    u64* path_count = path_stats.lookup(&idx);
+    if (!path_count) {
+      path_stats.update(&idx, &zero);
+      path_count = path_stats.lookup(&idx);
+    }
     if (path_count)
       (*path_count)++;
   }
@@ -561,20 +616,23 @@ int trace_tcp_v4_connect_return(struct pt_regs* ctx) {
     }
 
     event->ts_uptime_us = ts / 1000;
-    event->error_code = PT_REGS_RC(ctx);
+    // Note: We can't reliably get return value from ctx in all contexts
+    // so we'll rely on the branch tracking to determine success/failure
 
-    if (event->error_code == 0) {
+    // If no error was previously set, assume success
+    if (event->error_code == 0 && event->path_type != PATH_ERROR) {
       event->branch_type = CONNECT_SUCCESS;
       event->path_type = PATH_FAST;
 
-      u64* path_count = path_stats.lookup_or_init(&(u64){PATH_FAST}, &(u64){0});
+      u64 idx = PATH_FAST;
+      u64 zero = 0;
+      u64* path_count = path_stats.lookup(&idx);
+      if (!path_count) {
+        path_stats.update(&idx, &zero);
+        path_count = path_stats.lookup(&idx);
+      }
       if (path_count)
         (*path_count)++;
-    } else {
-      // Already set by specific error handlers
-      if (event->path_type == 0) {
-        event->path_type = PATH_ERROR;
-      }
     }
 
     connect_events.perf_submit(ctx, event, sizeof(*event));

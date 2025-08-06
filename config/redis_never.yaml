@@ -30,3 +30,4 @@ collector_config:
       - unmap_range
       - perf
       - tcp_state_process
+      - tcp_v4_connect

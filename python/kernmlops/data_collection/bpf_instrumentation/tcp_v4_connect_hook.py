@@ -205,53 +205,69 @@ class TcpV4ConnectBPFHook(BPFProgram):
         from data_schema.tcp_v4_connect import TcpConnectStatsTable, TcpV4ConnectTable
 
         # Main events table
-        events_df = pl.DataFrame(self.connect_events)
-
-        # Calculate statistics
         if len(self.connect_events) > 0:
-            branch_stats = self.bpf["branch_stats"]
-            path_stats = self.bpf["path_stats"]
-            error_stats = self.bpf["error_stats"]
+            events_df = pl.DataFrame(self.connect_events)
 
-            # Collect branch statistics
-            branch_counts = {}
-            for i in range(32):
-                count = branch_stats[i].value
-                if count > 0:
-                    branch_name = BRANCH_NAMES.get(i, f"unknown_{i}")
-                    branch_counts[branch_name] = count
+            # Calculate statistics - be robust about accessing BPF maps
+            try:
+                branch_stats = self.bpf.get_table("branch_stats")
+                path_stats = self.bpf.get_table("path_stats")
+                error_stats = self.bpf.get_table("error_stats")
 
-            # Collect path statistics
-            path_counts = {}
-            for i in range(4):
-                count = path_stats[i].value
-                if count > 0:
-                    path_name = PATH_NAMES.get(i, f"unknown_path_{i}")
-                    path_counts[path_name] = count
+                # Collect branch statistics
+                branch_counts = {}
+                for i in range(32):
+                    try:
+                        count = branch_stats[i].value if branch_stats[i] else 0
+                        if count > 0:
+                            branch_name = BRANCH_NAMES.get(i, f"unknown_{i}")
+                            branch_counts[branch_name] = count
+                    except Exception:
+                        pass
 
-            # Collect error statistics
-            error_counts = {}
-            for i in range(8):
-                count = error_stats[i].value
-                if count > 0:
-                    error_counts[f"error_type_{i}"] = count
+                # Collect path statistics
+                path_counts = {}
+                for i in range(4):
+                    try:
+                        count = path_stats[i].value if path_stats[i] else 0
+                        if count > 0:
+                            path_name = PATH_NAMES.get(i, f"unknown_path_{i}")
+                            path_counts[path_name] = count
+                    except Exception:
+                        pass
 
-            stats_df = pl.DataFrame({
-                "collection_id": [self.collection_id],
-                "total_connections": [len(self.connect_events)],
-                "successful_connections": [branch_counts.get("success", 0)],
-                "failed_connections": [sum(1 for e in self.connect_events if e.error_code != 0)],
-                "fast_path_count": [path_counts.get("fast", 0)],
-                "slow_path_count": [path_counts.get("slow", 0)],
-                "error_path_count": [path_counts.get("error", 0)],
-                "fastopen_count": [path_counts.get("fastopen", 0)],
-                "avg_latency_ns": [sum(e.latency_ns for e in self.connect_events) / len(self.connect_events) if self.connect_events else 0],
-            })
+                # Collect error statistics
+                error_counts = {}
+                for i in range(8):
+                    try:
+                        count = error_stats[i].value if error_stats[i] else 0
+                        if count > 0:
+                            error_counts[f"error_type_{i}"] = count
+                    except Exception:
+                        pass
 
-            return [
-                TcpV4ConnectTable.from_df_id(events_df, collection_id=self.collection_id),
-                TcpConnectStatsTable.from_df_id(stats_df, collection_id=self.collection_id),
-            ]
+                stats_df = pl.DataFrame({
+                    "collection_id": [self.collection_id],
+                    "total_connections": [len(self.connect_events)],
+                    "successful_connections": [branch_counts.get("success", 0)],
+                    "failed_connections": [sum(1 for e in self.connect_events if e.error_code != 0)],
+                    "fast_path_count": [path_counts.get("fast", 0)],
+                    "slow_path_count": [path_counts.get("slow", 0)],
+                    "error_path_count": [path_counts.get("error", 0)],
+                    "fastopen_count": [path_counts.get("fastopen", 0)],
+                    "avg_latency_ns": [sum(e.latency_ns for e in self.connect_events) / len(self.connect_events) if self.connect_events else 0],
+                })
+
+                return [
+                    TcpV4ConnectTable.from_df_id(events_df, collection_id=self.collection_id),
+                    TcpConnectStatsTable.from_df_id(stats_df, collection_id=self.collection_id),
+                ]
+            except Exception as e:
+                # If statistics fail, at least return the events
+                print(f"Warning: Failed to collect statistics: {e}")
+                return [
+                    TcpV4ConnectTable.from_df_id(events_df, collection_id=self.collection_id),
+                ]
         else:
             return []
 
