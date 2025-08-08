@@ -25,6 +25,7 @@ from data_schema.schema import (
 from data_schema.tcp_state_process import TcpStateProcessTable, TcpStateStatsTable
 from data_schema.tcp_v4_connect import TcpConnectStatsTable, TcpV4ConnectTable
 from data_schema.tcp_v4_rcv import TcpV4RcvTable
+from data_schema.tcp_congestion_control import TcpCongestionControlTable
 
 table_types: list[type[CollectionTable]] = [
     SystemInfoTable,
@@ -43,6 +44,7 @@ table_types: list[type[CollectionTable]] = [
     TcpStateStatsTable,
     TcpV4ConnectTable,
     TcpConnectStatsTable,
+    TcpCongestionControlTable,
 ] + list(perf.perf_table_types.values())
 
 

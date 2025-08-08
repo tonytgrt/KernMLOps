@@ -20,3 +20,4 @@ collector_config:
       - quanta_runtime
       - block_io
       - perf
+      - tcp_congestion_control
