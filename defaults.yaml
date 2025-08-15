@@ -49,3 +49,4 @@ collector_config:
       - tcp_state_process
       - tcp_v4_connect
       - tcp_congestion_control
+      - tcp_cubic

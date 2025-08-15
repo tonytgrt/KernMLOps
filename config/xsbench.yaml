@@ -20,10 +20,7 @@ collector_config:
     output_graphs: false
     hooks:
       - tcp_v4_rcv
-      - page_fault
-      - mm_rss_stat
-      - process_trace
-      - perf
       - tcp_state_process
       - tcp_v4_connect
       - tcp_congestion_control
+      - tcp_cubic

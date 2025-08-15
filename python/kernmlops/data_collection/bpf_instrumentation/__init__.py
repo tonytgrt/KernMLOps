@@ -24,6 +24,10 @@ from data_collection.bpf_instrumentation.process_metadata_hook import (
     ProcessMetadataHook,
 )
 from data_collection.bpf_instrumentation.quanta_runtime_hook import QuantaRuntimeBPFHook
+from data_collection.bpf_instrumentation.tcp_congestion_control_hook import (
+    TcpCongestionControlBPFHook,
+)
+from data_collection.bpf_instrumentation.tcp_cubic_hook import TcpCubicBPFHook
 from data_collection.bpf_instrumentation.tcp_state_process_hook import (
     TcpStateProcessBPFHook,
 )
@@ -31,9 +35,6 @@ from data_collection.bpf_instrumentation.tcp_v4_connect_hook import TcpV4Connect
 from data_collection.bpf_instrumentation.tcp_v4_rcv_hook import TcpV4RcvBPFHook
 from data_collection.bpf_instrumentation.unmap_range import UnmapRangeBPFHook
 from data_collection.bpf_instrumentation.zswap_runtime_hook import ZswapRuntimeBPFHook
-from data_collection.bpf_instrumentation.tcp_congestion_control_hook import (
-    TcpCongestionControlBPFHook,
-)
 
 all_hooks: Final[Mapping[str, type[BPFProgram]]] = {
     FileDataBPFHook.name(): FileDataBPFHook,
@@ -54,6 +55,7 @@ all_hooks: Final[Mapping[str, type[BPFProgram]]] = {
     TcpStateProcessBPFHook.name(): TcpStateProcessBPFHook,
     TcpV4ConnectBPFHook.name(): TcpV4ConnectBPFHook,
     TcpCongestionControlBPFHook.name(): TcpCongestionControlBPFHook,
+    TcpCubicBPFHook.name(): TcpCubicBPFHook,
 }
 
 def hook_names() -> list[str]:
